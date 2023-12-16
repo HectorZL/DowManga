@@ -14,14 +14,14 @@ class LinkExtractor:
                 context = p.chromium.launch_persistent_context(user_data_dir=self.user_data, executable_path=self.chrome_path, headless=True)
                 page = context.new_page()
                 print("__" * 50)
-                print("Navegando a la página...")
+                
                 page.goto(url_curso, wait_until="domcontentloaded")
-                print("Esperando a que la página cargue completamente...")
+                
 
                 # Espera a que los elementos de imagen se carguen
                 page.wait_for_selector('.reading-content img.wp-manga-chapter-img')
 
-                print("Buscando enlaces en la página...")
+                
                 print("__" * 50)
 
                 # Encuentra todos los enlaces con la clase especificada

@@ -50,13 +50,13 @@ def generar_nombre_cbz(url):
 
 def main():
 
-    kill_edge_processes()
+    
 
     # Solicita al usuario que introduzca un enlace
     print(" ")
-    url ="https://www.mangaread.org/manga/dark-fantasy-paladin/"
+    url ="https://www.mangaread.org/manga/solo-leveling-manhwa/"
     print(" ")
-    destination_folder = r"C:\Users\jesuc\Documents\Pruebas"
+    destination_folder = r"C:\Users\jesuc\Documents\test_dow_sololeveling"
     print(" ")
 
     
@@ -70,22 +70,13 @@ def main():
      links = extractor.get_links(links_c[i])
      full_links = [base_url + link for link in links]
      nombre_cbz = generar_nombre_cbz(links_c[i])  # Define the variable "nombre_cbz"
-     downloader = MangaDownloader(links, destination_folder)
+     downloader = MangaDownloader(links, destination_folder,i+1)
      downloader.create_cbz(os.path.join(destination_folder, nombre_cbz))
      downloader.delete_images()
 
 
 
-def kill_edge_processes():
 
-    try:
-        print(" ")
-        subprocess.run(["taskkill", "/F", "/IM", "msedge.exe", "/T"], check=True)
-        print(" ")
-    except subprocess.CalledProcessError:
-        print(" ")
-        print("No se encontraron procesos de Microsoft Edge en ejecución.")
-        print(" ")
 
 if __name__ == "__main__":
      main()

@@ -2,8 +2,8 @@ from playwright.sync_api import sync_playwright
 
 class LinkExtractor:
     def __init__(self):
-        self.user_data = r'C:\Users\jesuc\AppData\Local\Microsoft\Edge\User Data'
-        self.chrome_path = r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
+        
+        self.chrome_path = r'C:\Users\jesuc\Documents\ProyectsScarping\chrome-win64\chrome.exe'
     
     def get_links(self, url_curso: str) -> list:
         found_links = []
@@ -11,9 +11,9 @@ class LinkExtractor:
         try:
             with sync_playwright() as p:
                 # Lanza el navegador Edge en modo no headless para ver lo que sucede
-                context = p.chromium.launch_persistent_context(user_data_dir=self.user_data, executable_path=self.chrome_path, headless=True)
+                context = p.chromium.launch(executable_path=self.chrome_path, headless=True)
                 page = context.new_page()
-                print("__" * 50)
+                
                 
                 page.goto(url_curso, wait_until="domcontentloaded")
                 
@@ -22,7 +22,7 @@ class LinkExtractor:
                 page.wait_for_selector('.reading-content img.wp-manga-chapter-img')
 
                 
-                print("__" * 50)
+                
 
                 # Encuentra todos los enlaces con la clase especificada
                 link_elements = page.query_selector_all('.reading-content img.wp-manga-chapter-img')

@@ -4,79 +4,59 @@ from urllib.parse import urlparse, unquote
 from link_extractor import LinkExtractor
 from manga_d import MangaDownloader
 from bs4 import BeautifulSoup
+from utils import utilidades
 import requests
 
 base_url = "https://www.mangaread.org" 
 
-def get_html_content(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Verifica si la solicitud fue exitosa
-        return response.text  # Devuelve el contenido HTML de la respuesta
-    except requests.exceptions.RequestException as e:
-        print(f"Error al obtener el contenido HTML: {e}")
-        return None
-
-
-def extract_links(html_content):
-    links_c = []
-
-    soup = BeautifulSoup(html_content, 'html.parser')
-
-    # Encuentra todos los elementos li con la clase wp-manga-chapter
-    chapter_elements = soup.find_all('li', class_='wp-manga-chapter')
-
-    for chapter_element in chapter_elements:
-        # Encuentra el enlace dentro del elemento a
-        link_element = chapter_element.find('a')
-        if link_element:
-            link = link_element.get('href')
-            links_c.append(link)
-
-    return links_c
-
-def generar_nombre_cbz(url):
-    parsed_url = urlparse(url)
-    path_segments = parsed_url.path.split("/")
-
-    # Obtener el nombre del manga y del capítulo
-    nombre_manga = path_segments[-3]
-    numero_capitulo = path_segments[-2]  # Se asume que el número del capítulo está en la penúltima posición
-
-    # Generar el nombre del archivo CBZ
-    nombre_cbz = f"{nombre_manga}_c{numero_capitulo}.cbz"
-
-    return nombre_cbz
-
 def main():
-
     
-
-    # Solicita al usuario que introduzca un enlace
     print(" ")
+    
+    #url=input("Ingrese el link del manga a descargar : ")
     url ="https://www.mangaread.org/manga/solo-leveling-manhwa/"
+    
+    obj = utilidades() 
+    links = obj.extract_links(obj.get_html_content(url))
+
+    
     print(" ")
+    
+    #destination_folder = input(" Ingrese el link del manga a descargar : ")
     destination_folder = r"C:\Users\jesuc\Documents\test_dow_sololeveling"
+    
     print(" ")
 
     
+    links.reverse()
 
     
-    links_c = extract_links(get_html_content(url))
-    links_c.reverse()
+    print(f"Total de links encontrados: {len(links)}")
+    start_index = int(input("Desde qué número de enlace deseas reanudar la descarga: "))
 
-    for i in range(len(links_c)):
-     extractor = LinkExtractor()
-     links = extractor.get_links(links_c[i])
-     full_links = [base_url + link for link in links]
-     nombre_cbz = generar_nombre_cbz(links_c[i])  # Define the variable "nombre_cbz"
-     downloader = MangaDownloader(links, destination_folder,i+1)
-     downloader.create_cbz(os.path.join(destination_folder, nombre_cbz))
-     downloader.delete_images()
+    for i in range(start_index - 1, len(links)):
+        
+        extractor = LinkExtractor()
+        links = extractor.get_links(links[i])
+        full_links = [base_url + link for link in links]
+        nombre_cbz = obj.generar_nombre_cbz(links[i])  # Define the variable "nombre_cbz"
+        downloader = MangaDownloader(links, destination_folder, i+1)
+        
+        retry_count = 0
+        while retry_count < 3:
+            try:
+                downloader.create_cbz(os.path.join(destination_folder, nombre_cbz))
+                break  # Si la descarga es exitosa, salir del bucle while
+            except Exception as e:
+                print(f"Error al descargar el capítulo {i+1}: {e}")
+                retry_count += 1
+                print(f"Reintentando... (Intento {retry_count})")
 
+        if retry_count == 3:
+            print(f"No se pudo descargar el capítulo {i+1} después de 3 intentos. Pasando al siguiente capítulo.")
+            continue
 
-
-
+        downloader.delete_images()
 
 if __name__ == "__main__":
      main()

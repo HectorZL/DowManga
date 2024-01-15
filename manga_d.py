@@ -4,11 +4,15 @@ from zipfile import ZipFile
 from tqdm import tqdm
 
 class MangaDownloader:
+    
     def __init__(self, links, destination_folder,chapter_number):
+        
         self.links = links
         self.destination_folder = destination_folder
         self.chapter_number = chapter_number
+        
     def download_images(self):
+        
         if not os.path.exists(self.destination_folder):
             os.makedirs(self.destination_folder)
 
@@ -29,6 +33,7 @@ class MangaDownloader:
                 response.close()  # Cierra la respuesta después de cada descarga
 
     def create_cbz(self, cbz_filename):
+        
         self.download_images()  # Asegura que las imágenes estén descargadas
 
         with ZipFile(cbz_filename, 'w') as zip_file:
@@ -41,6 +46,7 @@ class MangaDownloader:
                     print(f"Advertencia: No se encontró el archivo {image_path}")
 
     def delete_images(self):
+        
         for i in range(1, len(self.links) + 1):
             image_path = os.path.join(self.destination_folder, f"page_{i}.jpg")
             if os.path.exists(image_path):

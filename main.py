@@ -17,8 +17,8 @@ def main():
     url ="https://www.mangaread.org/manga/solo-leveling-manhwa/"
     
     obj = utilidades() 
-    links = obj.extract_links(obj.get_html_content(url))
-
+    all_links = obj.extract_links(obj.get_html_content(url))
+    all_links.reverse()
     
     print(" ")
     
@@ -28,20 +28,34 @@ def main():
     print(" ")
 
     
-    links.reverse()
+    
 
     
-    print(f"Total de links encontrados: {len(links)}")
+    print(f"Total de links encontrados: {len(all_links)}")
     start_index = int(input("Desde qué número de enlace deseas reanudar la descarga: "))
 
-    for i in range(start_index - 1, len(links)):
+    for i in range(start_index - 1, len(all_links)):
         
         extractor = LinkExtractor()
-        links = extractor.get_links(links[i])
-        full_links = [base_url + link for link in links]
-        nombre_cbz = obj.generar_nombre_cbz(links[i])  # Define the variable "nombre_cbz"
-        downloader = MangaDownloader(links, destination_folder, i+1)
+        link = extractor.get_links(all_links[i])
         
+        
+        
+        
+        full_links = [base_url + link for link in link]
+
+        
+        
+        
+        nombre_cbz = obj.generar_nombre_cbz(all_links[i])  # Define the variable "nombre_cbz"
+        downloader = MangaDownloader(link, destination_folder, i+1)
+
+        # Verificar si el archivo ya existe
+        cbz_path = os.path.join(destination_folder, nombre_cbz)
+        if os.path.exists(cbz_path):
+            print(f"El archivo {nombre_cbz} ya existe. Pasando al siguiente enlace.")
+            continue
+                
         retry_count = 0
         while retry_count < 3:
             try:

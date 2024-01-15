@@ -47,6 +47,6 @@ class utilidades:
      numero_capitulo = path_segments[-2]  # Se asume que el número del capítulo está en la penúltima posición
  
      # Generar el nombre del archivo CBZ
-     nombre_cbz = f"{nombre_manga}_c{numero_capitulo}.cbz"
+     nombre_cbz = f"{nombre_manga}_{numero_capitulo}.cbz"
  
      return nombre_cbz

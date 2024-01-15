@@ -47,14 +47,21 @@ def main():
             try:
                 downloader.create_cbz(os.path.join(destination_folder, nombre_cbz))
                 break  # Si la descarga es exitosa, salir del bucle while
+            
             except Exception as e:
+                
                 print(f"Error al descargar el capítulo {i+1}: {e}")
                 retry_count += 1
                 print(f"Reintentando... (Intento {retry_count})")
-
+                
+            except internetdisconnected.err_internet_disconnected as e:
+                print(f"Error de conexión a Internet detectado: {e}. Verificar conexión.")
+                break;
+            
         if retry_count == 3:
-            print(f"No se pudo descargar el capítulo {i+1} después de 3 intentos. Pasando al siguiente capítulo.")
-            continue
+            
+            print(f"No se pudo descargar el capítulo {i+1} después de 3 intentos. Deteniendo el programa")
+            break;
 
         downloader.delete_images()
 

@@ -37,16 +37,4 @@ class utilidades:
  
      return links_c
  
- def generar_nombre_cbz(self,url):
-     
-     parsed_url = urlparse(url)
-     path_segments = parsed_url.path.split("/")
  
-     # Obtener el nombre del manga y del capítulo
-     nombre_manga = path_segments[-3]
-     numero_capitulo = path_segments[-2]  # Se asume que el número del capítulo está en la penúltima posición
- 
-     # Generar el nombre del archivo CBZ
-     nombre_cbz = f"{nombre_manga}_{numero_capitulo}.cbz"
- 
-     return nombre_cbz

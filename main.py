@@ -2,7 +2,8 @@ import os
 import subprocess
 from urllib.parse import urlparse, unquote
 from link_extractor import LinkExtractor
-from manga_d import MangaDownloader
+from manga_download import MangaDownloader
+from create_archive_cbz import CreateArchive
 from bs4 import BeautifulSoup
 from utils import utilidades
 import requests
@@ -16,14 +17,18 @@ def main():
     #url=input("Ingrese el link del manga a descargar : ")
     url ="https://www.mangaread.org/manga/solo-leveling-manhwa/"
     
+    #destination_folder = input(" Ingrese el link del manga a descargar : ")
+    destination_folder = r"C:\Users\HectorZL\Documents\test"
+
+    
     obj = utilidades() 
     all_links = obj.extract_links(obj.get_html_content(url))
     all_links.reverse()
     
+    
     print(" ")
     
-    #destination_folder = input(" Ingrese el link del manga a descargar : ")
-    destination_folder = r"C:\Users\jesuc\Documents\test_dow_sololeveling"
+   
     
     print(" ")
 
@@ -32,8 +37,13 @@ def main():
 
     
     print(f"Total de links encontrados: {len(all_links)}")
+    
+    print(" ")
+    
     start_index = int(input("Desde qué número de enlace deseas reanudar la descarga: "))
-
+    
+    print(" ")
+    
     for i in range(start_index - 1, len(all_links)):
         
         extractor = LinkExtractor()
@@ -45,11 +55,12 @@ def main():
         full_links = [base_url + link for link in link]
 
         
-        
-        
-        nombre_cbz = obj.generar_nombre_cbz(all_links[i])  # Define the variable "nombre_cbz"
-        downloader = MangaDownloader(link, destination_folder, i+1)
 
+        downloader = MangaDownloader(link, destination_folder, i+1)
+        archive = CreateArchive(all_links, destination_folder,downloader.download_images)
+        nombre_cbz = archive.generar_nombre_cbz(all_links[i]) 
+        
+        
         # Verificar si el archivo ya existe
         cbz_path = os.path.join(destination_folder, nombre_cbz)
         if os.path.exists(cbz_path):
@@ -59,7 +70,7 @@ def main():
         retry_count = 0
         while retry_count < 3:
             try:
-                downloader.create_cbz(os.path.join(destination_folder, nombre_cbz))
+                archive.create_cbz(os.path.join(destination_folder, nombre_cbz))
                 break  # Si la descarga es exitosa, salir del bucle while
             
             except Exception as e:
@@ -77,7 +88,7 @@ def main():
             print(f"No se pudo descargar el capítulo {i+1} después de 3 intentos. Deteniendo el programa")
             break;
 
-        downloader.delete_images()
+        archive.delete_images()
 
 if __name__ == "__main__":
      main()

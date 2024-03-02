@@ -2,8 +2,8 @@ from playwright.sync_api import sync_playwright
 
 class LinkExtractor:
     def __init__(self):
-        
-        self.chrome_path = r'C:\Users\jesuc\Documents\ProyectsScarping\chrome-win64\chrome.exe'
+        # In this part add the path to cromimum 
+        self.chrome_path = r'C:\Users\HectorZL\Documents\Proyects_Code\chrome-win\chrome.exe'
     
     def get_links(self, url_curso: str) -> list:
         found_links = []

@@ -32,22 +32,4 @@ class MangaDownloader:
 
                 response.close()  # Cierra la respuesta después de cada descarga
 
-    def create_cbz(self, cbz_filename):
-        
-        self.download_images()  # Asegura que las imágenes estén descargadas
-
-        with ZipFile(cbz_filename, 'w') as zip_file:
-            for i, link in enumerate(self.links, 1):
-                image_path = os.path.join(self.destination_folder, f"page_{i}.jpg")
-
-                if os.path.exists(image_path):
-                    zip_file.write(image_path, os.path.relpath(image_path, self.destination_folder))
-                else:
-                    print(f"Advertencia: No se encontró el archivo {image_path}")
-
-    def delete_images(self):
-        
-        for i in range(1, len(self.links) + 1):
-            image_path = os.path.join(self.destination_folder, f"page_{i}.jpg")
-            if os.path.exists(image_path):
-                os.remove(image_path)
+    

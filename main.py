@@ -25,40 +25,23 @@ def main():
     all_links = obj.extract_links(obj.get_html_content(url))
     all_links.reverse()
     
-    
-    print(" ")
-    
-   
-    
-    print(" ")
-
-    
-    
-
-    
     print(f"Total de links encontrados: {len(all_links)}")
     
-    print(" ")
+    
     
     start_index = int(input("Desde qué número de enlace deseas reanudar la descarga: "))
     
-    print(" ")
     
     for i in range(start_index - 1, len(all_links)):
         
         extractor = LinkExtractor()
         link = extractor.get_links(all_links[i])
         
-        
-        
-        
         full_links = [base_url + link for link in link]
 
-        
-
         downloader = MangaDownloader(link, destination_folder, i+1)
-        archive = CreateArchive(all_links, destination_folder,downloader.download_images)
-        nombre_cbz = archive.generar_nombre_cbz(all_links[i]) 
+        archive = CreateArchive(all_links[i], destination_folder,downloader.download_images)
+        nombre_cbz = archive.generar_nombre_cbz(all_links[i])
         
         
         # Verificar si el archivo ya existe
